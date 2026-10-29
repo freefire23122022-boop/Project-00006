@@ -889,4 +889,159 @@ button { font: inherit; touch-action: manipulation; }
 
     ctx.strokeStyle = "#333";
     ctx.lineWidth = 2.3;
+    
+    ctx.stroke();
+
+    segments.forEach((s, i) => {
+      const pulse = Math.sin(time * 10 - i * 0.8) * 1.5;
+      const radius = Math.max(1.5, 4 - i * 0.065);
+
+      // Moving rib bones and legs
+      if (i > 1 && i < segments.length - 2) {
+        const perp = s.angle + Math.PI / 2;
+        const ribLength = 8 + Math.sin(time * 8 - i) * 1.5;
+
+        for (const side of [-1, 1]) {
+          const px = s.x + Math.cos(perp) * ribLength * side;
+          const py = s.y + Math.sin(perp) * ribLength * side;
+
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(px, py);
+          ctx.strokeStyle = "#555";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          const legAngle = perp + side * (
+            0.8 + Math.sin(time * 10 + i) * 0.28
+          );
+
+          const footX = px + Math.cos(legAngle) * (7 + pulse);
+          const footY = py + Math.sin(legAngle) * (7 + pulse);
+
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(footX, footY);
+          ctx.strokeStyle = "#777";
+          ctx.lineWidth = 1.7;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(footX, footY, 1.3, 0, Math.PI * 2);
+          ctx.fillStyle = "#444";
+          ctx.fill();
+        }
+      }
+
+      // Vertebrae
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = i === 0 ? "#222" : "#777";
+      ctx.fill();
+      ctx.strokeStyle = "#333";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    drawSkull(segments[0]);
+  }
+
+  function animateCreature() {
+    animationFrame = null;
+    if (current !== "creature") return;
+
+    animationFrame = requestAnimationFrame(animateCreature);
+    time += 0.016;
+
+    drawWhite();
+
+    if (assembling) {
+      const elapsed = performance.now() - buildStart;
+      const progress = Math.min(1, elapsed / 6000);
+
+      drawNeonStrands();
+      drawFragments(progress);
+
+      if (progress >= 1) {
+        assembling = false;
+        assembled = true;
+      }
+    }
+
+    if (assembled) {
+      updateBody();
+      drawSkeleton();
+    }
+  }
+
+  function initCreature() {
+    if (animationFrame !== null) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+
+    resizeCanvas();
+
+    assembling = false;
+    assembled = false;
+    pointerHeld = false;
+    particles = [];
+    segments = [];
+    strandPoints = [];
+    time = 0;
+
+    if (!animationFrame) animateCreature();
+  }
+
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    resizeFP();
+  }, { passive: true });
+
+  resizeFP();
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+
+      if (fpAnim !== null) {
+        cancelAnimationFrame(fpAnim);
+        fpAnim = null;
+      }
+    } else {
+      if (current === "creature" && animationFrame === null) {
+        animateCreature();
+      }
+
+      if (
+        current === "finger" &&
+        (fpDown || fpUnlocked) &&
+        fpAnim === null
+      ) {
+        drawRays();
+      }
+    }
+  });
+
+  window.addEventListener("pagehide", () => {
+    timers.forEach(clearTimeout);
+    clearTimeout(fpTimer);
+
+    if (animationFrame !== null) {
+      cancelAnimationFrame(animationFrame);
+    }
+
+    if (fpAnim !== null) {
+      cancelAnimationFrame(fpAnim);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
+
   
