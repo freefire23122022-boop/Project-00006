@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>MR.RAKIB | CYBER EXPERIENCE</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "Courier New", monospace;
+  touch-action: none;
+}
+
+button { font: inherit; touch-action: manipulation; }
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.screen.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cyber {
+  color: #42ff9b;
+  background: radial-gradient(ellipse at center, #082219, #010503 60%, #000);
+}
+
+.grid-bg {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: .18;
+  background-image:
+    linear-gradient(#39ff8820 1px, transparent 1px),
+    linear-gradient(90deg, #39ff8820 1px, transparent 1px);
+  background-size: 34px 34px;
+  transform: perspective(500px) rotateX(55deg);
+  animation: gridMove 8s linear infinite;
+}
+
+@keyframes gridMove {
+  to { background-position: 0 68px; }
+}
+
+.intro-content {
+  z-index: 2;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.developer {
+  font-size: clamp(42px, 12vw, 84px);
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-shadow: 0 0 12px #39ff88, 0 0 38px #39ff8870;
+  animation: glitch 1.5s infinite;
+}
+
+.mr {
+  margin-top: 15px;
+  color: #caffdf;
+  font-size: clamp(17px, 5vw, 27px);
+  letter-spacing: 8px;
+  text-shadow: 0 0 15px #39ff88;
+}
+
+.intro-line {
+  width: 0;
+  height: 2px;
+  margin: 28px auto 0;
+  background: #39ff88;
+  box-shadow: 0 0 16px #39ff88;
+  animation: lineGrow 5s linear forwards;
+}
+
+@keyframes lineGrow {
+  to { width: min(240px, 65vw); }
+}
+
+@keyframes glitch {
+  0%, 92%, 100% { transform: translate(0); }
+  93% { transform: translate(2px, -1px); }
+  96% { transform: translate(-2px, 1px); }
+}
+
+.verify-content {
+  position: relative;
+  z-index: 2;
+  width: min(360px, 86%);
+  text-align: center;
+}
+
+.label {
+  margin-bottom: 28px;
+  font-size: clamp(17px, 5vw, 23px);
+  line-height: 1.6;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px #39ff88;
+}
+
+.cyber-btn {
+  min-width: 150px;
+  padding: 14px 35px;
+  border: 1px solid #39ff88;
+  border-radius: 2px;
+  background: #06150d;
+  color: #39ff88;
+  box-shadow: 0 0 20px #39ff8820;
+  font-size: 16px;
+  letter-spacing: 4px;
+}
+
+.cyber-btn:active {
+  color: #001008;
+  background: #39ff88;
+  box-shadow: 0 0 35px #39ff88;
+}
+
+#loading {
+  flex-direction: column;
+  gap: 25px;
+  background: radial-gradient(circle, #082219, #000 75%);
+  color: #39ff88;
+}
+
+.load-frame {
+  width: min(330px, 82%);
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #39ff88;
+  transform: skewX(-12deg);
+  box-shadow: 0 0 25px #39ff8840;
+}
+
+.load-fill {
+  width: 0;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg, #39ff88 0 8px, #087c43 8px 11px
+  );
+  box-shadow: 0 0 18px #39ff88;
+}
+
+.load-frame.animate .load-fill {
+  animation: fillBar 5s linear forwards;
+}
+
+@keyframes fillBar {
+  to { width: 100%; }
+}
+
+/* FINGERPRINT */
+#finger {
+  background: radial-gradient(circle, #071b11, #010302 60%, #000);
+  overflow: hidden;
+  touch-action: none;
+}
+
+#fingerFX {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fp-mark {
+  position: absolute;
+  width: 90px;
+  height: 110px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px #39ff88);
+  transition: opacity .15s;
+}
+
+.fp-mark.show { opacity: 1; }
+
+.fp-mark path {
+  fill: none;
+  stroke: #39ff88;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.scan-meter {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(240px, 65%);
+  height: 5px;
+  border: 1px solid #39ff88;
+  opacity: 0;
+}
+
+.scan-meter-fill {
+  height: 100%;
+  width: 0;
+  background: #39ff88;
+  box-shadow: 0 0 15px #39ff88;
+}
+
+#finger.scanning .scan-meter { opacity: 1; }
+
+#finger.scanning .scan-meter-fill {
+  animation: fillBar 3s linear forwards;
+}
+
+#confirm {
+  flex-direction: column;
+  padding: 25px;
+  text-align: center;
+  color: #39ff88;
+  background: #000;
+}
+
+.confirm-text {
+  max-width: 600px;
+  font-size: clamp(20px, 5.5vw, 35px);
+  line-height: 1.7;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px #39ff88;
+  animation: confirmGlitch 1s infinite;
+}
+
+@keyframes confirmGlitch {
+  50% { text-shadow: 3px 0 #00aaff, -3px 0 #39ff88; }
+}
+
+/* WHITE SCREEN */
+#white {
+  z-index: 10;
+  display: block;
+  background: #fff;
+  transform: translateY(-100%);
+}
+
+#white.active {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#white.falling {
+  animation: whiteFall 6s cubic-bezier(.7,0,.2,1) forwards;
+}
+
+@keyframes whiteFall {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.drag-hint {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #777;
+  font-size: 20px;
+  letter-spacing: 12px;
+  white-space: nowrap;
+  animation: dragShow 3s ease forwards;
+}
+
+@keyframes dragShow {
+  0% { opacity: 0; margin-left: -50px; }
+  25%, 70% { opacity: 1; margin-left: 0; }
+  100% { opacity: 0; margin-left: 50px; }
+}
+
+/* SKELETON CREATURE */
+#creature {
+  background: #fff;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+#creatureCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+</style>
+</head>
+
+<body>
+
+<section id="intro" class="screen active cyber">
+  <div class="grid-bg"></div>
+  <div class="intro-content">
+    <div class="developer">DEVELOPER</div>
+    <div class="mr">MR.RAKIB</div>
+    <div class="intro-line"></div>
+  </div>
+</section>
+
+<section id="verify" class="screen cyber">
+  <div class="grid-bg"></div>
+  <div class="verify-content">
+    <div class="label">CHECK YOU ARE HUMAN</div>
+    <button id="okBtn" class="cyber-btn">OK</button>
+  </div>
+</section>
+
+<section id="loading" class="screen">
+  <div class="load-frame" id="loadFrame">
+    <div class="load-fill"></div>
+  </div>
+</section>
+
+<section id="finger" class="screen">
+  <canvas id="fingerFX"></canvas>
+
+  <div class="scan-meter">
+    <div class="scan-meter-fill"></div>
+  </div>
+
+  <svg id="fpMark" class="fp-mark" viewBox="0 0 100 120">
+    <g>
+      <path d="M50 10 C25 10 12 29 12 52"/>
+      <path d="M50 20 C32 20 22 34 22 53"/>
+      <path d="M50 30 C39 30 32 40 32 55"/>
+      <path d="M50 40 C45 40 42 47 42 56"/>
+      <path d="M50 10 C75 10 88 29 88 52"/>
+      <path d="M50 20 C68 20 78 34 78 53"/>
+      <path d="M50 30 C61 30 68 40 68 55"/>
+      <path d="M50 40 C55 40 58 47 58 56"/>
+      <path d="M12 58 C12 88 26 105 50 113"/>
+      <path d="M22 58 C22 82 32 96 50 103"/>
+      <path d="M32 60 C32 78 40 88 50 94"/>
+      <path d="M42 60 C42 72 46 80 50 84"/>
+      <path d="M88 58 C88 88 74 105 50 113"/>
+      <path d="M78 58 C78 82 68 96 50 103"/>
+      <path d="M68 60 C68 78 60 88 50 94"/>
+      <path d="M58 60 C58 72 54 80 50 84"/>
+    </g>
+  </svg>
+</section>
+
+<section id="confirm" class="screen">
+  <div class="confirm-text">
+    YOU ARE HUMAN<br>NOT ROBOT<br>CONFIRM
+  </div>
+  <button id="nextBtn" class="cyber-btn" style="margin-top:35px">NEXT</button>
+</section>
+
+<section id="white" class="screen"></section>
+
+<section id="creature" class="screen">
+  <canvas id="creatureCanvas"></canvas>
+</section>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const screenNames = [
+    "intro", "verify", "loading", "finger",
+    "confirm", "white", "creature"
+  ];
+
+  let current = "intro";
+  let timers = [];
+
+  function later(fn, ms) {
+    const t = setTimeout(fn, ms);
+    timers.push(t);
+    return t;
+  }
+
+  function show(id) {
+    current = id;
+    screenNames.forEach(name => {
+      $(name).classList.toggle("active", name === id);
+    });
+  }
+
+  // INTRO: 5 seconds
+  later(() => show("verify"), 5000);
+
+  // OK: 5-second loading
+  $("okBtn").addEventListener("click", () => {
+    if (current !== "verify") return;
+
+    show("loading");
+    $("loadFrame").classList.remove("animate");
+    void $("loadFrame").offsetWidth;
+    $("loadFrame").classList.add("animate");
+
+    later(() => show("finger"), 5000);
+  });
+
+  // Fingerprint screen: hair-thin neon light rays
+  const fp = $("finger");
+  const fpCanvas = $("fingerFX");
+  const fctx = fpCanvas.getContext("2d");
+  const fpMark = $("fpMark");
+
+  let fw = 0, fh = 0, fdpr = 1;
+  let rays = [];
+  let fpDown = false;
+  let fpUnlocked = false;
+  let fpTimer = null;
+  let fpPoint = { x: 0, y: 0 };
+  let fpAnim = null;
+  let fpTime = 0;
+
+  function resizeFP() {
+    fdpr = Math.min(devicePixelRatio || 1, 2);
+    fw = innerWidth;
+    fh = innerHeight;
+
+    fpCanvas.width = fw * fdpr;
+    fpCanvas.height = fh * fdpr;
+    fpCanvas.style.width = fw + "px";
+    fpCanvas.style.height = fh + "px";
+    fctx.setTransform(fdpr, 0, 0, fdpr, 0, 0);
+  }
+
+  function makeRays(x, y) {
+    rays = [];
+
+    for (let i = 0; i < 260; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const length = Math.hypot(fw, fh) * (0.45 + Math.random() * 0.75);
+
+      rays.push({
+        x, y,
+        angle: a,
+        length,
+        speed: 0.35 + Math.random() * 1.5,
+        delay: Math.random() * 45,
+        width: 0.35 + Math.random() * 1.1,
+        alpha: 0.25 + Math.random() * 0.75,
+        drift: (Math.random() - 0.5) * 0.025,
+        phase: Math.random() * 10
+      });
+    }
+  }
+
+  function drawRays() {
+    fpAnim = null;
+    if (current !== "finger") return;
+
+    fpTime++;
+    fctx.clearRect(0, 0, fw, fh);
+
+    if (fpDown || fpUnlocked) {
+      for (const r of rays) {
+        r.angle += r.drift;
+
+        const progress = Math.min(
+          1, Math.max(0, (fpTime - r.delay) / 45)
+        );
+
+        const len = r.length * progress;
+        const x2 = r.x + Math.cos(r.angle) * len;
+        const y2 = r.y + Math.sin(r.angle) * len;
+
+        fctx.beginPath();
+        fctx.moveTo(r.x, r.y);
+        fctx.lineTo(x2, y2);
+        fctx.lineWidth = r.width;
+        fctx.strokeStyle =
+          `rgba(57,255,136,${r.alpha * (1-progress*.8)})`;
+        fctx.shadowColor = "#39ff88";
+        fctx.shadowBlur = 7;
+        fctx.stroke();
+
+        // Thin branching strands.
+        if (progress > 0.2 && r.phase < 2) {
+          const bx = r.x + Math.cos(r.angle) * len * 0.55;
+          const by = r.y + Math.sin(r.angle) * len * 0.55;
+          const branchAngle = r.angle + Math.sin(fpTime * .02 + r.phase) * .8;
+
+          fctx.beginPath();
+          fctx.moveTo(bx, by);
+          fctx.lineTo(
+            bx + Math.cos(branchAngle) * 22,
+            by + Math.sin(branchAngle) * 22
+          );
+          fctx.lineWidth = .45;
+          fctx.strokeStyle = `rgba(57,255,136,${.35*(1-progress)})`;
+          fctx.stroke();
+        }
+      }
+    }
+
+    fctx.shadowBlur = 0;
+    fpAnim = requestAnimationFrame(drawRays);
+  }
+
+  function startRayAnimation() {
+    fpTime = 0;
+    makeRays(fpPoint.x, fpPoint.y);
+    if (fpAnim === null) drawRays();
+  }
+
+  function stopRayAnimation() {
+    if (fpAnim !== null) {
+      cancelAnimationFrame(fpAnim);
+      fpAnim = null;
+    }
+    fctx.clearRect(0, 0, fw, fh);
+  }
+
+  function fpPosition(e) {
+    const rect = fp.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  function startFP(e) {
+    if (current !== "finger" || fpUnlocked) return;
+    e.preventDefault();
+
+    fpDown = true;
+    fpPoint = fpPosition(e);
+
+    fpMark.style.left = fpPoint.x + "px";
+    fpMark.style.top = fpPoint.y + "px";
+    fpMark.classList.add("show");
+    fp.classList.add("scanning");
+
+    startRayAnimation();
+
+    clearTimeout(fpTimer);
+    fpTimer = setTimeout(() => {
+      if (!fpDown || current !== "finger") return;
+
+      fpUnlocked = true;
+      fpDown = false;
+      fp.classList.remove("scanning");
+
+      // Rays gradually disappear after unlocking.
+      fpMark.classList.remove("show");
+
+      later(() => show("confirm"), 700);
+    }, 3000);
+  }
+
+  function stopFP() {
+    if (!fpDown || fpUnlocked) return;
+
+    fpDown = false;
+    fp.classList.remove("scanning");
+    fpMark.classList.remove("show");
+    clearTimeout(fpTimer);
+
+    // Keep the rays briefly, then fade them away.
+    later(() => {
+      rays = [];
+      stopRayAnimation();
+    }, 700);
+  }
+
+  fp.addEventListener("pointerdown", startFP);
+  window.addEventListener("pointerup", stopFP);
+  window.addEventListener("pointercancel", stopFP);
+
+  // NEXT: white curtain falls for six seconds
+  $("nextBtn").addEventListener("click", () => {
+    if (current !== "confirm") return;
+
+    const white = $("white");
+    show("white");
+    white.innerHTML = "";
+    white.classList.remove("falling");
+    void white.offsetWidth;
+    white.classList.add("falling");
+
+    later(() => {
+      white.classList.remove("falling");
+      white.innerHTML = '<div class="drag-hint">DRAG</div>';
+    }, 6000);
+
+    later(() => {
+      white.innerHTML = "";
+      show("creature");
+      initCreature();
+    }, 9000);
+  });
+
+  // --------------------------------------------------
+  // SKELETON SERPENT
+  // Tap/hold: fragments assemble over SIX seconds.
+  // Releasing the finger will NOT dissolve the snake.
+  // The completed snake stays and slithers in place.
+  // --------------------------------------------------
+
+  const canvas = $("creatureCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let W = 0, H = 0, dpr = 1;
+  let animationFrame = null;
+  let time = 0;
+
+  let assembling = false;
+  let assembled = false;
+  let pointerHeld = false;
+  let buildStart = 0;
+  let buildX = 0;
+  let buildY = 0;
+
+  let head = { x: 0, y: 0 };
+  let heading = 0;
+  let segments = [];
+  let particles = [];
+  let strandPoints = [];
+
+  const COUNT = 34;
+  const GAP = 8;
+
+  function resizeCanvas() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth;
+    H = innerHeight;
+
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    if (!assembled && !assembling) {
+      head.x = W / 2;
+      head.y = H / 2;
+    }
+  }
+
+  function rand(a, b) {
+    return a + Math.random() * (b - a);
+  }
+
+  function createCreature(x, y) {
+    buildX = x;
+    buildY = y;
+    buildStart = performance.now();
+    assembling = true;
+    assembled = false;
+
+    head = { x, y };
+    heading = 0;
+    segments = [];
+    particles = [];
+    strandPoints = [];
+
+    for (let i = 0; i < COUNT; i++) {
+      segments.push({
+        x: x - i * GAP,
+        y,
+        angle: 0
+      });
+    }
+
+    // Every bone and fragment starts scattered around the screen.
+    for (let i = 0; i < COUNT * 7; i++) {
+      const a = rand(0, Math.PI * 2);
+      const d = rand(Math.min(W,H) * .25, Math.max(W,H) * .8);
+
+      const index = Math.floor(i / 7);
+      const side = i % 2 ? 1 : -1;
+
+      let tx, ty;
+
+      if (i % 7 === 0) {
+        tx = x - index * GAP;
+        ty = y;
+      } else {
+        const bx = x - index * GAP;
+        const wave = Math.sin(index * .55) * 20;
+        tx = bx + Math.cos(a) * rand(3, 18);
+        ty = y + wave + Math.sin(a) * rand(3, 18) + side * 3;
+      }
+
+      particles.push({
+        x: x + Math.cos(a) * d,
+        y: y + Math.sin(a) * d,
+        tx, ty,
+        size: rand(1, 2.8),
+        angle: a,
+        speed: rand(.009, .025),
+        alpha: rand(.4, .9)
+      });
+    }
+
+    // Fine neon lines flow outward from the touch location.
+    for (let i = 0; i < 100; i++) {
+      const a = rand(0, Math.PI * 2);
+      strandPoints.push({
+        x, y,
+        angle: a,
+        length: rand(20, Math.max(W,H) * .7),
+        progress: 0,
+        speed: rand(.004, .016),
+        alpha: rand(.1, .65)
+      });
+    }
+  }
+
+  function onCreatureDown(e) {
+    if (current !== "creature") return;
+    e.preventDefault();
+
+    pointerHeld = true;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Only the first touch starts assembly.
+    // Once complete, the snake stays in place.
+    if (!assembled && !assembling) {
+      createCreature(x, y);
+    }
+
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch (_) {}
+  }
+
+  function onCreatureMove(e) {
+    if (!pointerHeld || current !== "creature") return;
+    e.preventDefault();
+
+    // Do not move or destroy the creature after assembly.
+  }
+
+  function onCreatureUp() {
+    pointerHeld = false;
+    // Deliberately do not dissolve the snake.
+  }
+
+  canvas.addEventListener("pointerdown", onCreatureDown);
+  canvas.addEventListener("pointermove", onCreatureMove);
+  canvas.addEventListener("pointerup", onCreatureUp);
+  canvas.addEventListener("pointercancel", onCreatureUp);
+  canvas.addEventListener("lostpointercapture", onCreatureUp);
+
+  function drawWhite() {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawNeonStrands() {
+    for (const s of strandPoints) {
+      s.progress = Math.min(1, s.progress + s.speed);
+
+      const len = s.length * s.progress;
+      const endX = s.x + Math.cos(s.angle) * len;
+      const endY = s.y + Math.sin(s.angle) * len;
+
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle =
+        `rgba(57,255,136,${s.alpha * (1-s.progress)})`;
+      ctx.lineWidth = .55;
+      ctx.stroke();
+    }
+  }
+
+  function drawFragments(progress) {
+    for (const p of particles) {
+      const ease = progress * progress * (3 - 2 * progress);
+      const x = p.x + (p.tx - p.x) * ease;
+      const y = p.y + (p.ty - p.y) * ease;
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(p.angle + time * .1);
+      ctx.globalAlpha = p.alpha * (1 - progress * .6);
+      ctx.fillStyle = "#555";
+      ctx.fillRect(-p.size, -p.size * .5, p.size * 2, p.size);
+      ctx.restore();
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  function updateBody() {
+    if (!assembled) return;
+
+    // The head stays near its chosen location.
+    // A traveling wave makes the body slither like a snake.
+    head.x = buildX + Math.sin(time * 1.2) * 12;
+    head.y = buildY + Math.sin(time * 2.1) * 10;
+
+    heading = Math.atan2(
+      Math.cos(time * 2.1) * 10,
+      Math.cos(time * 1.2) * 12
+    );
+
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+
+      const wave = Math.sin(time * 2.6 - i * .42);
+      const wave2 = Math.sin(time * 1.4 - i * .23);
+
+      s.x = head.x - i * GAP * Math.cos(heading)
+            + wave * i * .65;
+
+      s.y = head.y - i * GAP * Math.sin(heading)
+            + wave * 7 + wave2 * 3;
+
+      if (i > 0) {
+        const prev = segments[i - 1];
+        s.angle = Math.atan2(prev.y - s.y, prev.x - s.x);
+      } else {
+        s.angle = heading;
+      }
+    }
+  }
+
+  function drawSkull(s) {
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.angle);
+
+    ctx.fillStyle = "#252525";
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1.5;
+
+    ctx.beginPath();
+    ctx.ellipse(2, 0, 8, 5.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Jaw bone
+    ctx.beginPath();
+    ctx.moveTo(2, 3);
+    ctx.lineTo(9, 6);
+    ctx.lineTo(12, 4);
+    ctx.stroke();
+
+    // Neon eye
+    ctx.fillStyle = "#39ff88";
+    ctx.shadowColor = "#39ff88";
+    ctx.shadowBlur = 7;
+    ctx.beginPath();
+    ctx.arc(5, -2, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawSkeleton() {
+    if (!assembled) return;
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    // Spinal cord
+    ctx.beginPath();
+    segments.forEach((s, i) => {
+      if (i === 0) ctx.moveTo(s.x, s.y);
+      else ctx.lineTo(s.x, s.y);
+    });
+
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 2.3;
+  
